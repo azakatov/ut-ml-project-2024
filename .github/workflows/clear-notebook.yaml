@@ -26,7 +26,7 @@ jobs:
       run: |
         git config --global --add safe.directory /github/workspace
         nbstripout main.ipynb
-        git diff --exit-code || git commit -am "Clear notebook outputs"
+        git commit -am "Clear notebook outputs"
 
     - name: Push changes
       run: git push
