@@ -3,7 +3,7 @@ name: Clear Jupyter Notebook Outputs
 on:
   push:
     branches:
-      - test-hook  # Adjust this if you're using a different branch
+      - "!main"
   pull_request:
 
 jobs:
