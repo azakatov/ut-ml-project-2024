@@ -1,0 +1,39 @@
+name: Clear Jupyter Notebook Outputs
+
+on:
+  push:
+    branches:
+      - "!main"
+  pull_request:
+
+jobs:
+  clear_notebooks:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install nbstripout
+      run: pip install nbstripout
+
+    - name: Clear Jupyter notebook outputs
+      run: |
+        git config --global --add safe.directory /github/workspace
+        git config --global user.email "runner@localhost"
+        git config --global user.name "Github Runner"
+        git pull
+        nbstripout main.ipynb
+        git commit -am "Clear notebook outputs"
+
+    - name: Push changes
+      run: git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
