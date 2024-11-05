@@ -25,15 +25,18 @@ jobs:
       run: pip install nbstripout
 
     - name: Clear Jupyter notebook outputs
+      id: verify_diff
       run: |
-        git config --global --add safe.directory /github/workspace
-        git config --global user.email "runner@localhost"
-        git config --global user.name "Github Runner"
-        git pull
         nbstripout main.ipynb
-        git commit -am "Clear notebook outputs"
+        git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
 
     - name: Push changes
-      run: git push
+      if: steps.verify_diff.outputs.changed == 'true'
+      run: |
+        git config --global --add safe.directory /github/workspace
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -am "Clear notebook outputs"
+        git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
