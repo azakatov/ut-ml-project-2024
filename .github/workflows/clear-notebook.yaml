@@ -24,7 +24,6 @@ jobs:
 
     - name: Clear Jupyter notebook outputs
       run: |
-        nbstripout --install
         git config --global --add safe.directory /github/workspace
         jupyter nbconvert --clear-output --inplace main.ipynb
         git diff --exit-code || git commit -am "Clear notebook outputs"
