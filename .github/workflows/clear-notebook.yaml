@@ -1,0 +1,35 @@
+name: Clear Jupyter Notebook Outputs
+
+on:
+  push:
+    branches:
+      - test-hook  # Adjust this if you're using a different branch
+  pull_request:
+
+jobs:
+  clear_notebooks:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'  # Specify the Python version you need
+
+    - name: Install nbstripout
+      run: pip install nbstripout
+
+    - name: Clear Jupyter notebook outputs
+      run: |
+        nbstripout --install  # Ensures .ipynb files are stripped on commits
+        git config --global --add safe.directory /github/workspace
+        git ls-files '**/*.ipynb' | xargs nbstripout
+        git diff --exit-code || git commit -am "Clear notebook outputs"
+
+    - name: Push changes
+      run: git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
