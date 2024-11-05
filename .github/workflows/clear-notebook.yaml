@@ -27,6 +27,7 @@ jobs:
         git config --global --add safe.directory /github/workspace
         git config --global user.email "runner@localhost"
         git config --global user.name "Github Runner"
+        git pull
         nbstripout main.ipynb
         git commit -am "Clear notebook outputs"
 
