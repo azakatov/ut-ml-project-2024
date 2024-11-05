@@ -17,16 +17,16 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'  # Specify the Python version you need
+        python-version: '3.x'
 
     - name: Install nbstripout
       run: pip install nbstripout
 
     - name: Clear Jupyter notebook outputs
       run: |
-        nbstripout --install  # Ensures .ipynb files are stripped on commits
+        nbstripout --install
         git config --global --add safe.directory /github/workspace
-        git ls-files '**/*.ipynb' | xargs nbstripout
+        jupyter nbconvert --clear-output --inplace main.ipynb
         git diff --exit-code || git commit -am "Clear notebook outputs"
 
     - name: Push changes
